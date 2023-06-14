@@ -1,37 +1,36 @@
-// Function to check the server status
-function getServerIP(domain, callback) {
-  const url = `https://api.mcsrvstat.us/2/${domain}`;
+function checkServerStatus() {
+  const serverInput = document.getElementById('serverInput');
+  const statusContainer = document.getElementById('statusContainer');
+  const statusTitle = document.getElementById('statusTitle');
+  const statusText = document.getElementById('statusText');
+  const playerCount = document.getElementById('playerCount');
+
+  const ipOrDomain = serverInput.value.trim();
+  if (ipOrDomain === '') {
+    return;
+  }
+
+  const url = `https://api.mcsrvstat.us/2/${ipOrDomain}`;
 
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      if (data.ip) {
-        callback(data.ip);
+      statusContainer.style.display = 'block';
+      if (data.online) {
+        statusTitle.textContent = 'Server is Online';
+        statusTitle.className = 'status-online';
+        statusText.innerHTML = `Players Online: ${data.players.online} / ${data.players.max}`;
       } else {
-        console.error('Error retrieving server IP');
-        callback(null);
+        statusTitle.textContent = 'Server is Offline';
+        statusTitle.className = 'status-offline';
+        statusText.innerHTML = '';
       }
     })
     .catch(error => {
-      console.error('Error retrieving server IP:', error);
-      callback(null);
+      console.error('Error checking server status:', error);
+      statusContainer.style.display = 'block';
+      statusTitle.textContent = 'Error';
+      statusTitle.className = 'status-offline';
+      statusText.innerHTML = '';
     });
 }
-
-
-// Called die Funktion
-const domain = 'yourmcserver.net';
-
-getServerIP(domain, ip => {
-  if (ip) {
-    console.log('Server IP:', ip);
-
-    // Führe die Statusabfrage mit der IP-Adresse durch
-    const port = 25565; // Der Port deines Minecraft-Servers
-    checkMinecraftServerStatus(ip, port, status => {
-      // Handle den Serverstatus hier
-    });
-  } else {
-    console.log('Fehler beim Abrufen der Server-IP');
-  }
-});
