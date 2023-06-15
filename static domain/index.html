@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Server Status Check</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script>
+    function checkMinecraftServerStatus() {
+      const ip = 'gommehd.net';
+      const port = 25565; // Der Port des Minecraft-Servers
+
+      fetch(`https://api.mcsrvstat.us/2/${ip}:${port}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.online) {
+            const status = 'Online';
+            const playerCount = data.players ? data.players.online : 0;
+            const maxPlayers = data.players ? data.players.max : 0;
+            updateServerStatus(status, playerCount, maxPlayers);
+          } else {
+            updateServerStatus('Offline', 0, 0);
+          }
+        })
+        .catch(error => {
+          console.error('Error retrieving server status:', error);
+          updateServerStatus('Error', 0, 0);
+        });
+    }
+
+    function updateServerStatus(status, playerCount, maxPlayers) {
+      const statusElement = document.getElementById('server-status');
+      const playerCountElement = document.getElementById('player-count');
+      const maxPlayersElement = document.getElementById('max-players');
+      statusElement.textContent = status;
+      playerCountElement.textContent = playerCount;
+      maxPlayersElement.textContent = maxPlayers;
+    }
+
+    // Rufe checkMinecraftServerStatus() beim Laden der Seite auf
+    window.onload = function() {
+      checkMinecraftServerStatus();
+
+      // Führe checkMinecraftServerStatus() alle 20 Sekunden aus
+      setInterval(checkMinecraftServerStatus, 20000);
+    };
+  </script>
+</head>
+<body>
+  <h1>Server Status Check</h1>
+  <p>Server IP: gommehd.net</p>
+  <p>Server Status: <span id="server-status"></span></p>
+  <p>Player Count: <span id="player-count"></span>/<span id="max-players"></span></p>
+</body>
+</html>
