@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1 {
+    color: #4285F4;
+  }
+  
+  p {
+    margin-bottom: 10px;
+  }
+  
+  #server-status {
+    font-weight: bold;
+  }
+  
+  #player-count,
+  #max-players {
+    font-style: italic;
+  }
+  
